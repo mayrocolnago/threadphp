@@ -1,6 +1,6 @@
 <?php
 function thread($func) {
-    if(!function_exists('shell_exec')) return false;
+    if(!function_exists('shell_exec')) return null;
     $refl = new \ReflectionFunction($func); $rp = [];
     $code = explode("\n", file_get_contents($refl->getFileName()));
     $code = array_slice($code, ($begin = $refl->getStartLine()-1), (($refl->getEndLine())-($begin)));
@@ -13,6 +13,6 @@ function thread($func) {
           if(!empty($hq = http_build_query([$k => ($vars[$k] ?? ($_REQUEST[$k] ?? ($_SERVER[$k] ?? null)))])))
             $trgg .= "-d $hq ";
     shell_exec($bash = ($trgg."-r \"".str_replace('"',"\\\"",implode(" \\\n",$code))."\" > /dev/null 2>&1 &"));
-    return (($_REQUEST['debug'] == '2') ? $bash : true);
+    return $bash;
 }
 ?>
